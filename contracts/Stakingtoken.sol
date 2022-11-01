@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8;
+pragma solidity ^0.8.0;
 
 contract StakingRewards {
     IERC20 public immutable stakingToken;
@@ -7,25 +7,21 @@ contract StakingRewards {
 
     address public owner;
 
-    // Duration of rewards to be paid out (in seconds)
-    uint public duration;
-    // Timestamp of when the rewards finish
-    uint public finishAt;
-    // Minimum of last updated time and reward finish time
-    uint public updatedAt;
-    // Reward to be paid out per second
-    uint public rewardRate;
-    // Sum of (reward rate * dt * 1e18 / total supply)
+    uint public duration;             // Duration of rewards to be paid out (in days)
+    uint public finishAt;           // Timestamp of when the rewards finish
+    uint public updatedAt;          // Minimum of last updated time and reward finish time
+    uint public rewardRate;        // Reward to be paid out per second
     uint public rewardPerTokenStored;
-    // User address => rewardPerTokenStored
+    
     mapping(address => uint) public userRewardPerTokenPaid;
-    // User address => rewards to be claimed
     mapping(address => uint) public rewards;
 
-    // Total staked
-    uint public totalSupply;
-    // User address => staked amount
-    mapping(address => uint) public balanceOf;
+    struct Stacks{
+       uint256 _bal;
+       uint256 _stakingTime;
+    }
+    uint public totalSupply;                           // Total staked
+    mapping (address => Stacks) stackings;             // User address => staked amount
 
     constructor(address _stakingToken, address _rewardToken) {
         owner = msg.sender;
@@ -34,7 +30,7 @@ contract StakingRewards {
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "not authorized");
+        require(msg.sender == owner, "not verified");
         _;
     }
 
